@@ -1,13 +1,20 @@
 import pygame
 from constants import *
 from circleshape import CircleShape
-
+from typing import Optional , Tuple
 class Player(CircleShape):
+    
+    _containers:Optional[Tuple[pygame.sprite.Group, pygame.sprite.Group]] = None
     def __init__(self , x, y):
         super().__init__(x,y,PLAYER_RADIUS)
         self.rotation = 0
         self.radius = PLAYER_RADIUS
 
+        if Player._containers is not None:
+            for group in Player._containers:
+                group.add(self)
+
+     
     # in the player class
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -30,3 +37,13 @@ class Player(CircleShape):
             self.rotate(-dt)
         if keys[pygame.K_d]:
             self.rotate(dt)
+        if keys[pygame.K_s]:
+            self.move(-dt)
+        if keys[pygame.K_w]:
+            self.move(dt)
+        return
+  
+    def move(self, dt):
+
+        foward = pygame.Vector2(0,1).rotate(self.rotation)
+        self.position += foward * PLAYER_SPEED * dt
